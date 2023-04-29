@@ -1,16 +1,5 @@
 
-/*let engBoard = [];
-document.addEventListener("keydown", (event) => {
-    let k = {};
-    k.key = event.key;
-    // eslint-disable-next-line linebreak-style
-    k.code = event.code;
-    if (k.code === "MetaLeft") { k.key ="Win"};
-    if (k.code === "ControlLeft" || k.code === "ControlRight") { k.key ="Ctrl"};
-    engBoard.push(k);
-    if (k.key === 'Shift') {engBoard.pop()}
-    console.log(engBoard);
-}) */
+
 const englishBoardLowerCase = [
   [
     { key: '`', code: 'Backquote' },
@@ -494,7 +483,7 @@ const russianBoardUpperCase = [
 
 
 class Board {
-  textArea= null;
+ 
   createTextArea() {
     const textArea = document.createElement('textarea');
     textArea.className = 'text-area';
@@ -530,12 +519,19 @@ class Board {
         this.boardStringWrapper[i].append(button);
         buttons.push(button);
         button.addEventListener('click', (event) => {this.printSymbol.apply(this, event)});
+        button.addEventListener('click', (event) => {this.changeBoardCase.apply(this, event)});
       }
 
     }
+    
+    return buttons;
+  }
+
+  addListeners() {
     window.addEventListener('keydown', (event) => {this.highlightKey.apply(this, event)});
     window.addEventListener('keyup', (event) => {this.abortHighlightKey.apply(this, event)});
-    return buttons;
+    window.addEventListener('keydown', (event) => {this.changeBoard.apply(this, event)});
+    window.addEventListener('keydown', (event) => {this.changeBoardCase.apply(this, event)});
   }
 
   printSymbol() {
@@ -549,7 +545,7 @@ class Board {
     for (let elem of this.boardStringWrapper) {
       elem.remove();
     }
-    
+  
   }
 
   highlightKey() {
@@ -559,13 +555,6 @@ class Board {
       if (event.code === elem.code) {
         elem.style.backgroundColor = 'orange';
         elem.style.borderRadius = '20px';
-        /*if (event.key === 'Shift') {
-          this.removeBoard();
-          this.boardStringWrapper = this.createBoardLines(englishBoardShiftCase);
-          this.buttons = this.createBoardButtons(englishBoardShiftCase);
-          elem.style.backgroundColor = 'orange';
-          elem.style.borderRadius = '20px';
-        }*/
       }
     }
 
@@ -578,22 +567,107 @@ class Board {
       if (event.code === elem.code) {
         elem.style.backgroundColor = '';
         elem.style.borderRadius = '';
-        /*if (event.key === 'Shift') {
-          this.removeBoard();
-          this.boardStringWrapper = this.createBoardLines(englishBoardLowerCase);
-          this.buttons = this.createBoardButtons(englishBoardLowerCase);
-        }*/
       }
     }
-    
+  }
 
+  changeButtonsNotes(base) {
+    let k =0;
+     
+    for (let i = 0; i < base.length; i++) {
+      for (let j = 0; j < base[i].length; j++) {
+       this.buttons[k].innerHTML = base[i][j].key;
+       k++;
+      }     
+    }
+
+  }
+
+  changeBoard() {
+    if(event.code === 'AltLeft' && event.ctrlKey ) {
+
+      switch (sessionStorage.getItem('lang-mode')) {
+        case 'rus-lower':
+          this.changeButtonsNotes(englishBoardLowerCase);
+          sessionStorage.setItem('lang-mode', 'eng-lower');
+          break;
+        case 'rus-upper':
+          this.changeButtonsNotes(englishBoardUpperCase);
+          sessionStorage.setItem('lang-mode', 'eng-upper');
+          break;
+        case 'eng-lower':
+          this.changeButtonsNotes(russianBoardLowerCase);
+          sessionStorage.setItem('lang-mode', 'rus-lower');
+          break;
+        case 'eng-upper':
+          this.changeButtonsNotes(russianBoardUpperCase);
+          sessionStorage.setItem('lang-mode', 'rus-upper');
+          break;
+      
+        default:
+          break;
+      }
+      
+    }
+  }
+
+  changeBoardCase() {
+    if(event.code === 'CapsLock' || event.target.innerHTML === 'CapsLock' ) {
+
+      switch (sessionStorage.getItem('lang-mode')) {
+        case 'rus-lower':
+          this.changeButtonsNotes(russianBoardUpperCase);
+          sessionStorage.setItem('lang-mode', 'rus-upper');
+          break;
+        case 'rus-upper':
+          this.changeButtonsNotes(russianBoardLowerCase);
+          sessionStorage.setItem('lang-mode', 'rus-lower');
+          break;
+        case 'eng-lower':
+          this.changeButtonsNotes(englishBoardUpperCase);
+          sessionStorage.setItem('lang-mode', 'eng-upper');
+          break;
+        case 'eng-upper':
+          this.changeButtonsNotes(englishBoardLowerCase);
+          sessionStorage.setItem('lang-mode', 'eng-lower');
+          break;
+      
+        default:
+          break;
+      }
+      
+    }
   }
 
 }
 
 const board = new Board();
 board.textArea = board.createTextArea();
-board.boardStringWrapper = board.createBoardLines(englishBoardLowerCase);
-board.buttons = board.createBoardButtons(englishBoardLowerCase);
+if (!sessionStorage.getItem('lang-mode')) {sessionStorage.setItem('lang-mode', 'eng-lower')};
+let stor = sessionStorage.getItem('lang-mode');
+let langMode;
+switch (stor) {
+  case 'rus-lower':
+    langMode = russianBoardLowerCase;
+    break;
+  case 'rus-upper':
+    langMode = russianBoardUpperCase;
+    break;
+  case 'eng-lower':
+    langMode = englishBoardLowerCase;
+    break;
+  case 'eng-upper':
+    langMode = englishBoardUpperCase;
+    break;
+
+  default:
+    break;
+}
+
+board.boardStringWrapper = board.createBoardLines(langMode);
+board.buttons = board.createBoardButtons(langMode);
+board.addListeners();
+
+
 
 
