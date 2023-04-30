@@ -646,7 +646,6 @@ document.onkeydown = function() {
 }
 
 
-
 class Board {
  
   createTextArea() {
@@ -687,6 +686,9 @@ class Board {
         button.addEventListener('click', (event) => {this.changeBoardCase.apply(this, event)});
         button.addEventListener('click', (event) => {this.applyShiftOnClick.apply(this, event)});
         button.addEventListener('click', (event) => {this.applyTab.apply(this, event)});
+        button.addEventListener('click', (event) => {this.emulateEnter.apply(this, event)});
+        button.addEventListener('click', (event) => {this.emulateBackspace.apply(this, event)});
+        button.addEventListener('click', (event) => {this.emulateDelete.apply(this, event)});
       }
 
     }
@@ -931,11 +933,44 @@ class Board {
       this.textArea.value += "    ";
     }
   }
+
+  emulateEnter() {
+   if (event.target.innerHTML === 'Enter') {
+    //this.textArea.selectionStart = 5;
+    //this.textArea.selectionEnd = 5;
+    console.log(this.textArea.selectionStart);
+    console.log(this.textArea.selectionEnd);
+   }
+  }
+
+  emulateBackspace() {
+    if (event.target.innerHTML === 'Backspace') {
+      this.textArea.focus();
+      let start = this.textArea.selectionStart - 1;
+      let end = this.textArea.selectionEnd ;
+      this.textArea.setSelectionRange(start, end);
+      this.textArea.setRangeText('');
+     }
+  }
+
+  emulateDelete() {
+    if (event.target.innerHTML === 'Delete') {
+      this.textArea.focus();
+      let start = this.textArea.selectionStart;
+      let end = this.textArea.selectionEnd + 1;
+      this.textArea.setSelectionRange(start, end);
+      this.textArea.setRangeText('');
+     }
+  }
+  
   
 }
 
+
+
 const board = new Board();
 board.textArea = board.createTextArea();
+board.textArea.wrap = true;
 if (!localStorage.getItem('lang-mode')) {localStorage.setItem('lang-mode', 'eng-lower')};
 let stor = localStorage.getItem('lang-mode');
 let langMode;
