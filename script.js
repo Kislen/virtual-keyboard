@@ -638,7 +638,12 @@ const russianBoardUpperCase = [
   ],
 ];
 
-
+document.onkeydown = function(event) {
+  const arr = ['Backspace', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt', 'F12'];
+  if (!arr.includes(event.key)) {
+    event.preventDefault();
+  }
+}
 
 
 
@@ -695,10 +700,11 @@ class Board {
     window.addEventListener('keydown', (event) => {this.changeBoardCase.apply(this, event)});
     window.addEventListener('keydown', (event) => {this.applyShift.apply(this, event)});
     window.addEventListener('keyup', (event) => {this.ammendShift.apply(this, event)});
+    window.addEventListener('keydown', (event) => {this.pintSymbolWithPhysicalBoard.apply(this, event)});
   }
 
   printSymbol() {
-    const arr = ['Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt']
+    const arr = ['Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt'];
     if (!arr.includes(event.target.innerHTML)) {
     this.textArea.focus();
     this.textArea.value += event.target.innerHTML;
@@ -899,10 +905,24 @@ class Board {
           default:
             break;
         }
-      }, 1000);
+      }, 1400);
     }
+  }
   
-  }    
+  pintSymbolWithPhysicalBoard() {
+    const arr = ['Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt'];
+    if (!arr.includes(event.key)) {
+    this.textArea.focus();
+    for (let elem of this.buttons) {
+      console.log(this.buttons);
+      if (event.code === elem.code) {
+        this.textArea.value += elem.innerHTML;
+      }
+    }
+    
+    }
+  }
+  
 }
 
 const board = new Board();
