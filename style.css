@@ -16,7 +16,7 @@
   width: 60%;
   max-width: 1024px;
   margin: 20px auto;
-  border: 2px solid black;
+  border: 6px solid rgb(103, 102, 102);
   border-radius: 6px;
   background-color: gray;
   overflow: hidden;

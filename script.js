@@ -638,8 +638,8 @@ const russianBoardUpperCase = [
   ],
 ];
 
-document.onkeydown = function(event) {
-  const arr = ['Backspace', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt', 'F12'];
+document.onkeydown = function() {
+  const arr = ['Backspace', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Control', 'Meta', 'F12', 'ArrowLeft','ArrowRight', 'ArrowUp', 'ArrowDown'];
   if (!arr.includes(event.key)) {
     event.preventDefault();
   }
@@ -686,6 +686,7 @@ class Board {
         button.addEventListener('click', (event) => {this.printSymbol.apply(this, event)});
         button.addEventListener('click', (event) => {this.changeBoardCase.apply(this, event)});
         button.addEventListener('click', (event) => {this.applyShiftOnClick.apply(this, event)});
+        button.addEventListener('click', (event) => {this.applyTab.apply(this, event)});
       }
 
     }
@@ -701,6 +702,7 @@ class Board {
     window.addEventListener('keydown', (event) => {this.applyShift.apply(this, event)});
     window.addEventListener('keyup', (event) => {this.ammendShift.apply(this, event)});
     window.addEventListener('keydown', (event) => {this.pintSymbolWithPhysicalBoard.apply(this, event)});
+    window.addEventListener('keydown', (event) => {this.applyTab.apply(this, event)});
   }
 
   printSymbol() {
@@ -910,16 +912,23 @@ class Board {
   }
   
   pintSymbolWithPhysicalBoard() {
-    const arr = ['Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Ctrl', 'Win', 'Alt'];
+    const arr = ['Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Control', 'Meta', 'Alt', 'ArrowLeft','ArrowRight', 'ArrowUp', 'ArrowDown'];
     if (!arr.includes(event.key)) {
     this.textArea.focus();
+
     for (let elem of this.buttons) {
-      console.log(this.buttons);
       if (event.code === elem.code) {
         this.textArea.value += elem.innerHTML;
       }
     }
-    
+  
+    }
+  }
+
+  applyTab() {
+    if (event.target.innerHTML === 'Tab' || event.key === 'Tab') {
+      this.textArea.focus();
+      this.textArea.value += "    ";
     }
   }
   
