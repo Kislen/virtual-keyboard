@@ -936,10 +936,11 @@ class Board {
 
   emulateEnter() {
    if (event.target.innerHTML === 'Enter') {
-    //this.textArea.selectionStart = 5;
-    //this.textArea.selectionEnd = 5;
-    console.log(this.textArea.selectionStart);
-    console.log(this.textArea.selectionEnd);
+    this.textArea.focus();
+    this.textArea.value = 
+    this.textArea.value.substring(0, this.textArea.selectionStart) + 
+    "\n" +
+    this.textArea.value.substring(this.textArea.selectionEnd, this.textArea.value.length);
    }
   }
 
