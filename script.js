@@ -914,7 +914,7 @@ class Board {
   }
   
   pintSymbolWithPhysicalBoard() {
-    const arr = ['Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Control', 'Meta', 'Alt', 'ArrowLeft','ArrowRight', 'ArrowUp', 'ArrowDown'];
+    const arr = ['Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'Shift', 'Control', 'Meta', 'Alt'];
     if (!arr.includes(event.key)) {
     this.textArea.focus();
 
@@ -936,10 +936,11 @@ class Board {
 
   emulateEnter() {
    if (event.target.innerHTML === 'Enter') {
-    //this.textArea.selectionStart = 5;
-    //this.textArea.selectionEnd = 5;
-    console.log(this.textArea.selectionStart);
-    console.log(this.textArea.selectionEnd);
+    this.textArea.focus();
+    this.textArea.value = 
+    this.textArea.value.substring(0, this.textArea.selectionStart) + 
+    "\n" +
+    this.textArea.value.substring(this.textArea.selectionEnd, this.textArea.value.length);
    }
   }
 
@@ -995,6 +996,11 @@ switch (stor) {
 board.boardStringWrapper = board.createBoardLines(langMode);
 board.buttons = board.createBoardButtons(langMode);
 board.addListeners();
+const indicateNote = document.createElement('div');
+indicateNote.className = 'indicate-note';
+indicateNote.innerHTML = 'Клавиатура создана в операционной системе Windows. <br> Для переключения языка комбинация: левыe ctrl + alt';
+const boardWrapper = document.querySelector('.board-wrapper');
+boardWrapper.after(indicateNote);
 
 
 
